@@ -1,0 +1,59 @@
+.calendar {
+  padding: 16px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.header button {
+  font-size: 1.5rem;
+  padding: 4px 12px;
+  color: var(--color-primary);
+}
+
+.monthLabel {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 4px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px 2px;
+  border-radius: 8px;
+  min-height: 52px;
+  gap: 3px;
+}
+
+.day:hover {
+  background: var(--color-primary-light);
+}
+
+.dayNum {
+  font-size: 0.85rem;
+}
+
+.today .dayNum {
+  font-weight: 700;
+  color: var(--color-primary);
+}

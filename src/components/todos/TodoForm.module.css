@@ -1,0 +1,48 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.typeToggle {
+  display: flex;
+  gap: 8px;
+}
+
+.typeBtn {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  font-weight: 500;
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
+  transition: all 0.2s;
+}
+
+.typeBtn.active {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.dateInput,
+.textInput {
+  padding: 10px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  outline: none;
+  width: 100%;
+}
+
+.dateInput:focus,
+.textInput:focus {
+  border-color: var(--color-primary);
+}
+
+.submit {
+  padding: 12px;
+  background: var(--color-primary);
+  color: white;
+  border-radius: 8px;
+  font-weight: 500;
+}

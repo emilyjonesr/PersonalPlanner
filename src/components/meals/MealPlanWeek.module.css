@@ -1,0 +1,74 @@
+.container {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dayCard {
+  background: var(--color-surface);
+  border-radius: 10px;
+  padding: 12px 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.dayName {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.slot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.slotLabel {
+  font-size: 0.8rem;
+  text-transform: capitalize;
+  color: var(--color-text-secondary);
+  width: 50px;
+}
+
+.assigned {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.assigned button {
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+}
+
+.assignBtn {
+  font-size: 0.85rem;
+  color: var(--color-primary);
+  padding: 4px 8px;
+}
+
+.recipeList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.recipePick {
+  text-align: left;
+  padding: 12px;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.recipePick:hover {
+  background: var(--color-primary-light);
+}
+
+.emptyMsg {
+  text-align: center;
+  color: var(--color-text-secondary);
+  padding: 16px;
+}

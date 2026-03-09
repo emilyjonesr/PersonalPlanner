@@ -1,0 +1,20 @@
+.weekNav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px 16px 32px;
+}
+
+.weekNav button {
+  font-size: 1.1rem;
+  color: var(--color-primary);
+  padding: 2px 6px;
+}
+
+.weekLabel {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+  min-width: 110px;
+  text-align: center;
+}

@@ -1,0 +1,58 @@
+.container {
+  padding: 16px;
+}
+
+.progress {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 12px;
+}
+
+.list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-surface);
+  padding: 12px 16px;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  flex: 1;
+}
+
+.label input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--color-primary);
+}
+
+.done {
+  text-decoration: line-through;
+  color: var(--color-text-secondary);
+}
+
+.remove {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  padding: 4px;
+}
+
+.empty {
+  text-align: center;
+  color: var(--color-text-secondary);
+  padding: 32px 16px;
+}

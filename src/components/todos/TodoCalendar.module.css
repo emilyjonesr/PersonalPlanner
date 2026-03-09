@@ -1,0 +1,59 @@
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  display: inline-block;
+}
+
+.details {
+  padding: 16px;
+  margin: 0 16px 16px;
+  background: var(--color-surface);
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.detailHeader {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.empty {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.event,
+.todo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+}
+
+.todoLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  cursor: pointer;
+}
+
+.todoLabel input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primary);
+}
+
+.done {
+  text-decoration: line-through;
+  color: var(--color-text-secondary);
+}
+
+.removeBtn {
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  padding: 4px;
+}
