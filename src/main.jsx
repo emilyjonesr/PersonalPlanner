@@ -10,7 +10,7 @@ cleanupOldData();
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/PersonalPlanner/">
       <App />
     </BrowserRouter>
   </StrictMode>,
