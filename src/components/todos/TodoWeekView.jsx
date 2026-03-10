@@ -5,9 +5,13 @@ import styles from './TodoWeekView.module.css';
 export default function TodoWeekView({
   calendarEvents,
   todos,
+  recurringDone,
+  getRecurringForDate,
   toggleTodo,
   removeTodo,
   removeEvent,
+  toggleRecurring,
+  removeRecurring,
 }) {
   const todayStr = today();
 
@@ -22,7 +26,9 @@ export default function TodoWeekView({
       {days.map((dateStr) => {
         const events = calendarEvents[dateStr] || [];
         const dayTodos = todos[dateStr] || [];
-        const empty = events.length === 0 && dayTodos.length === 0;
+        const recurring = getRecurringForDate(dateStr);
+        const donIds = recurringDone[dateStr] || [];
+        const empty = events.length === 0 && dayTodos.length === 0 && recurring.length === 0;
 
         return (
           <div key={dateStr} className={styles.dayGroup}>
@@ -37,12 +43,20 @@ export default function TodoWeekView({
               <div key={e.id} className={styles.event}>
                 <span className={styles.eventIcon}>📌</span>
                 <span className={styles.eventText}>{e.text}</span>
-                <button
-                  className={styles.removeBtn}
-                  onClick={() => removeEvent(dateStr, e.id)}
-                >
-                  ✕
-                </button>
+                <button className={styles.removeBtn} onClick={() => removeEvent(dateStr, e.id)}>✕</button>
+              </div>
+            ))}
+            {recurring.map((t) => (
+              <div key={t.id} className={styles.todo}>
+                <label className={styles.todoLabel}>
+                  <input
+                    type="checkbox"
+                    checked={donIds.includes(t.id)}
+                    onChange={() => toggleRecurring(dateStr, t.id)}
+                  />
+                  <span className={donIds.includes(t.id) ? styles.done : ''}>{t.text}</span>
+                </label>
+                <button className={styles.removeBtn} onClick={() => removeRecurring(t.id)}>✕</button>
               </div>
             ))}
             {dayTodos.map((t) => (
@@ -55,12 +69,7 @@ export default function TodoWeekView({
                   />
                   <span className={t.done ? styles.done : ''}>{t.text}</span>
                 </label>
-                <button
-                  className={styles.removeBtn}
-                  onClick={() => removeTodo(dateStr, t.id)}
-                >
-                  ✕
-                </button>
+                <button className={styles.removeBtn} onClick={() => removeTodo(dateStr, t.id)}>✕</button>
               </div>
             ))}
           </div>

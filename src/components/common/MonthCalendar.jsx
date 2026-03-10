@@ -11,16 +11,13 @@ import styles from './MonthCalendar.module.css';
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 export default function MonthCalendar({ onDayClick, renderDay }) {
+  const now = new Date();
   const [month, setMonth] = useState(
-    () => new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+    () => new Date(now.getFullYear(), now.getMonth(), 1),
   );
 
   const days = getMonthDays(month);
-  const startDay = new Date(
-    month.getFullYear(),
-    month.getMonth(),
-    1,
-  ).getDay();
+  const startDay = month.getDay();
   const todayStr = today();
 
   return (

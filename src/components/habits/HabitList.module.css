@@ -2,12 +2,6 @@
   padding: 16px;
 }
 
-.progress {
-  text-align: center;
-  font-size: 0.9rem;
-  color: var(--color-text-secondary);
-  margin-bottom: 12px;
-}
 
 .list {
   list-style: none;

@@ -37,6 +37,7 @@ export default function TodosPage() {
         onClose={() => setFormOpen(false)}
         onAddTodo={data.addTodo}
         onAddEvent={data.addEvent}
+        onAddRecurring={data.addRecurring}
       />
     </>
   );

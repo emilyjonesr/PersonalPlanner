@@ -14,8 +14,6 @@ const VIEW_OPTIONS = [
   { value: 'recipes', label: 'Recipes' },
 ];
 
-const VIEW_LABELS = { plan: 'Meals', groceries: 'Groceries', recipes: 'Recipes' };
-
 export default function MealsPage() {
   const [view, setView] = useState('plan');
   const [menuOpen, setMenuOpen] = useState(false);
@@ -24,7 +22,7 @@ export default function MealsPage() {
   return (
     <>
       <TopBar
-        title={VIEW_LABELS[view]}
+        title={VIEW_OPTIONS.find((o) => o.value === view)?.label}
         right={
           <DropdownMenu
             options={VIEW_OPTIONS}

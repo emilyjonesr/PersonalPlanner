@@ -4,9 +4,16 @@
   gap: 12px;
 }
 
+.typeRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .typeToggle {
   display: flex;
-  gap: 8px;
+  gap: 6px;
+  flex: 1;
 }
 
 .typeBtn {
@@ -22,6 +29,47 @@
 .typeBtn.active {
   background: var(--color-primary-light);
   color: var(--color-primary);
+}
+
+.recurringBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.recurringActive {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.dayPicker {
+  display: flex;
+  gap: 6px;
+  justify-content: space-between;
+}
+
+.dayBtn {
+  flex: 1;
+  padding: 8px 4px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
+  transition: all 0.15s;
+}
+
+.dayActive {
+  background: var(--color-primary);
+  color: white;
 }
 
 .dateInput,
