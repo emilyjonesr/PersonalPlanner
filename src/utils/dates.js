@@ -1,3 +1,7 @@
+export const genId = () =>
+  crypto.randomUUID?.() ??
+  `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}`;
+
 export function toDateStr(date) {
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, '0');

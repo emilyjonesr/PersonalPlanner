@@ -1,0 +1,22 @@
+{"sessionId":"e67b27","location":"Modal.jsx:useEffect","message":"modal state change","data":{"openProp":false,"dialogOpen":false,"title":"New Habit"},"timestamp":1773106756425,"hypothesisId":"D"}
+{"sessionId":"e67b27","location":"Modal.jsx:useEffect","message":"modal state change","data":{"openProp":false,"dialogOpen":false,"title":"New Habit"},"timestamp":1773106756425,"hypothesisId":"D"}
+{"sessionId":"e67b27","location":"main.jsx:global-click","message":"click fired","data":{"target":"BUTTON","targetClass":"_addBtn_u3imr_15","x":421,"y":29},"timestamp":1773106861547,"hypothesisId":"E"}
+{"sessionId":"e67b27","location":"Modal.jsx:useEffect","message":"modal state change","data":{"openProp":true,"dialogOpen":false,"title":"New Habit"},"timestamp":1773106861558,"hypothesisId":"D"}
+{"sessionId":"e67b27","location":"main.jsx:global-click","message":"click fired","data":{"target":"INPUT","targetClass":"_modalInput_u3imr_30","x":180,"y":90},"timestamp":1773106862354,"hypothesisId":"E"}
+{"sessionId":"e67b27","location":"main.jsx:global-click","message":"click fired","data":{"target":"BUTTON","targetClass":"_modalSubmit_u3imr_44","x":203,"y":136},"timestamp":1773106864001,"hypothesisId":"E"}
+{"sessionId":"e67b27","location":"Modal.jsx:useEffect","message":"modal state change","data":{"openProp":false,"dialogOpen":true,"title":"New Habit"},"timestamp":1773106864006,"hypothesisId":"D"}
+{"sessionId":"e67b27","location":"main.jsx:global-click","message":"click fired","data":{"target":"BUTTON","targetClass":"_remove_p7xxf_42","x":438,"y":389},"timestamp":1773106866288,"hypothesisId":"E"}
+{"sessionId":"e67b27","location":"Modal.jsx:useEffect","message":"modal state change","data":{"openProp":false,"dialogOpen":false,"title":"New Habit"},"timestamp":1773107064710,"hypothesisId":"D"}
+{"sessionId":"e67b27","location":"Modal.jsx:useEffect","message":"modal state change","data":{"openProp":false,"dialogOpen":false,"title":"New Habit"},"timestamp":1773107064711,"hypothesisId":"D"}
+{"sessionId":"e67b27","location":"Modal.jsx:useEffect","message":"modal state change","data":{"openProp":false,"dialogOpen":false,"title":"New Habit"},"timestamp":1773107163557,"hypothesisId":"D"}
+{"sessionId":"e67b27","location":"Modal.jsx:useEffect","message":"modal state change","data":{"openProp":false,"dialogOpen":false,"title":"New Habit"},"timestamp":1773107163558,"hypothesisId":"D"}
+{"sessionId":"e67b27","location":"Modal.jsx:useEffect","message":"modal state change","data":{"openProp":true,"dialogOpen":false,"title":"New Habit"},"timestamp":1773107200685,"hypothesisId":"D"}
+{"sessionId":"e67b27","location":"Modal.jsx:useEffect","message":"modal state change","data":{"openProp":false,"dialogOpen":true,"title":"New Habit"},"timestamp":1773107203280,"hypothesisId":"D"}
+{"sessionId":"e67b27","location":"Modal.jsx:useEffect","message":"modal state change","data":{"openProp":false,"dialogOpen":false,"title":"New Habit"},"timestamp":1773107285700,"hypothesisId":"D"}
+{"sessionId":"e67b27","location":"Modal.jsx:useEffect","message":"modal state change","data":{"openProp":false,"dialogOpen":false,"title":"New Habit"},"timestamp":1773107285702,"hypothesisId":"D"}
+{"sessionId":"e67b27","location":"Modal.jsx:useEffect","message":"modal state change","data":{"openProp":false,"dialogOpen":false,"title":"New Habit"},"timestamp":1773107327491,"hypothesisId":"D"}
+{"sessionId":"e67b27","location":"Modal.jsx:useEffect","message":"modal state change","data":{"openProp":false,"dialogOpen":false,"title":"New Habit"},"timestamp":1773107327491,"hypothesisId":"D"}
+{"sessionId":"e67b27","location":"Modal.jsx:useEffect","message":"modal state change","data":{"openProp":false,"dialogOpen":false,"title":"New Habit"},"timestamp":1773107395081,"hypothesisId":"D"}
+{"sessionId":"e67b27","location":"Modal.jsx:useEffect","message":"modal state change","data":{"openProp":false,"dialogOpen":false,"title":"New Habit"},"timestamp":1773107395082,"hypothesisId":"D"}
+{"sessionId":"e67b27","location":"Modal.jsx:useEffect","message":"modal state change","data":{"openProp":false,"dialogOpen":false,"title":"New Habit"},"timestamp":1773107414960,"hypothesisId":"D"}
+{"sessionId":"e67b27","location":"Modal.jsx:useEffect","message":"modal state change","data":{"openProp":false,"dialogOpen":false,"title":"New Habit"},"timestamp":1773107414960,"hypothesisId":"D"}

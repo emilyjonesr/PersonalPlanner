@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import useLocalStorage from './useLocalStorage';
-import { today } from '../utils/dates';
+import { today, genId } from '../utils/dates';
 
 export default function useHabits() {
   const [habits, setHabits] = useLocalStorage('habits', []);
@@ -42,7 +42,7 @@ export default function useHabits() {
     (name) => {
       setHabits((prev) => [
         ...prev,
-        { id: crypto.randomUUID(), name, order: prev.length },
+        { id: genId(), name, order: prev.length },
       ]);
     },
     [setHabits],

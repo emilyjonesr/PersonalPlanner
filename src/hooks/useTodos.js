@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import useLocalStorage from './useLocalStorage';
-import { parseDate } from '../utils/dates';
+import { parseDate, genId } from '../utils/dates';
 
 // days: 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
 const DEFAULT_RECURRING = [
@@ -41,7 +41,7 @@ export default function useTodos() {
     (text, days) => {
       setRecurringTodos((prev) => [
         ...prev,
-        { id: crypto.randomUUID(), text, days },
+        { id: genId(), text, days },
       ]);
     },
     [setRecurringTodos],
@@ -56,7 +56,7 @@ export default function useTodos() {
     (dateStr, text) => {
       setCalendarEvents((prev) => ({
         ...prev,
-        [dateStr]: [...(prev[dateStr] || []), { id: crypto.randomUUID(), text }],
+        [dateStr]: [...(prev[dateStr] || []), { id: genId(), text }],
       }));
     },
     [setCalendarEvents],
@@ -76,7 +76,7 @@ export default function useTodos() {
     (dateStr, text) => {
       setTodos((prev) => ({
         ...prev,
-        [dateStr]: [...(prev[dateStr] || []), { id: crypto.randomUUID(), text, done: false }],
+        [dateStr]: [...(prev[dateStr] || []), { id: genId(), text, done: false }],
       }));
     },
     [setTodos],

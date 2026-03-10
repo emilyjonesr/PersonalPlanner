@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import useLocalStorage from './useLocalStorage';
-import { toDateStr, getWeekStart, addDays } from '../utils/dates';
+import { toDateStr, getWeekStart, addDays, genId } from '../utils/dates';
 
 export const DAYS = [
   'Saturday',
@@ -32,7 +32,7 @@ export default function useMeals() {
     (name, ingredients) => {
       setRecipes((prev) => [
         ...prev,
-        { id: crypto.randomUUID(), name, ingredients },
+        { id: genId(), name, ingredients },
       ]);
     },
     [setRecipes],
@@ -127,7 +127,7 @@ export default function useMeals() {
           removed: prev[weekKey]?.removed || [],
           added: [
             ...(prev[weekKey]?.added || []),
-            { id: crypto.randomUUID(), name, qty: '', unit: '' },
+            { id: genId(), name, qty: '', unit: '' },
           ],
         },
       }));
