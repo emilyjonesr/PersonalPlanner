@@ -12,7 +12,7 @@ Live at: **https://emilyjonesr.github.io/PersonalPlanner/**
 3. Scroll down and tap **Add to Home Screen**
 4. Tap **Add** — it'll appear on your home screen like an app
 
-> To update the icon after a new deploy: press and hold the icon → **Remove from Home Screen** (not Delete!) → then re-add it from Safari. Your data will be safe as long as you don't tap Delete.
+> **Note:** On newer iOS versions, deleting the app from your home screen will also delete its data. To avoid this, you don't need to reinstall to get updates — the app updates automatically in the background. Only reinstall if the icon itself needs updating, and be aware data will be lost when you do.
 
 ---
 
