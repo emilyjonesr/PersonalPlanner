@@ -1,5 +1,6 @@
 import MonthCalendar from '../common/MonthCalendar';
 import { today } from '../../utils/dates';
+import styles from './HabitCalendar.module.css';
 
 const CheckIcon = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round">
@@ -8,7 +9,7 @@ const CheckIcon = () => (
   </svg>
 );
 
-export default function HabitCalendar({ habitLog, habitToday, habits }) {
+export default function HabitCalendar({ habitLog, habitToday, habits, toggleHabitLog }) {
   const todayStr = today();
 
   const isDone = (dateStr) => {
@@ -17,9 +18,18 @@ export default function HabitCalendar({ habitLog, habitToday, habits }) {
     return habitLog[dateStr];
   };
 
+  const handleDayClick = (dateStr) => {
+    if (dateStr >= todayStr) return;
+    toggleHabitLog(dateStr);
+  };
+
   return (
-    <MonthCalendar
-      renderDay={(dateStr) => isDone(dateStr) ? <CheckIcon /> : null}
-    />
+    <>
+      <MonthCalendar
+        onDayClick={handleDayClick}
+        renderDay={(dateStr) => isDone(dateStr) ? <CheckIcon /> : null}
+      />
+      <p className={styles.hint}>Tap a past day to mark it as completed</p>
+    </>
   );
 }

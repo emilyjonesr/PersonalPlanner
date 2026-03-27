@@ -55,6 +55,13 @@ export default function useHabits() {
     [setHabits],
   );
 
+  const toggleHabitLog = useCallback(
+    (dateStr) => {
+      setHabitLog((prev) => ({ ...prev, [dateStr]: !prev[dateStr] }));
+    },
+    [setHabitLog],
+  );
+
   return {
     habits,
     habitLog,
@@ -62,5 +69,6 @@ export default function useHabits() {
     toggleHabit,
     addHabit,
     removeHabit,
+    toggleHabitLog,
   };
 }
