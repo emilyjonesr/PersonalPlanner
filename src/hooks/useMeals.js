@@ -108,13 +108,18 @@ export default function useMeals() {
 
   const removeGroceryItem = useCallback(
     (name) => {
-      setGroceryOverrides((prev) => ({
-        ...prev,
-        [weekKey]: {
-          removed: [...(prev[weekKey]?.removed || []), name.toLowerCase()],
-          added: prev[weekKey]?.added || [],
-        },
-      }));
+      setGroceryOverrides((prev) => {
+        const current = prev[weekKey] || { removed: [], added: [] };
+        return {
+          ...prev,
+          [weekKey]: {
+            removed: [...current.removed, name.toLowerCase()],
+            added: current.added.filter(
+              (item) => item.name.toLowerCase() !== name.toLowerCase(),
+            ),
+          },
+        };
+      });
     },
     [setGroceryOverrides, weekKey],
   );
