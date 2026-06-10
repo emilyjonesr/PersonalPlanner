@@ -21,6 +21,11 @@
   gap: 8px;
 }
 
+.dayGroupOver {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+
 .todayBadge {
   font-size: 0.7rem;
   font-weight: 500;
@@ -79,5 +84,27 @@
   font-size: 0.85rem;
   padding: 4px;
   flex-shrink: 0;
+}
+
+.dragHandle {
+  color: var(--color-border);
+  font-size: 1rem;
+  cursor: grab;
+  padding: 4px 2px;
+  flex-shrink: 0;
+  touch-action: none;
+  user-select: none;
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+.dragOverlay {
+  background: var(--color-surface);
+  border-radius: 8px;
+  padding: 8px 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  cursor: grabbing;
 }
 

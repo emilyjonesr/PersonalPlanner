@@ -13,6 +13,7 @@ export default function useTodos() {
   const [todos, setTodos] = useLocalStorage('todos', {});
   const [recurringTodos, setRecurringTodos] = useLocalStorage('recurringTodos', DEFAULT_RECURRING);
   const [recurringDone, setRecurringDone] = useLocalStorage('recurringDone', {});
+  const [todoOrder, setTodoOrder] = useLocalStorage('todoOrder', {});
 
   const getRecurringForDate = useCallback(
     (dateStr) => {
@@ -20,6 +21,42 @@ export default function useTodos() {
       return recurringTodos.filter((t) => t.days.includes(day));
     },
     [recurringTodos],
+  );
+
+  // Unified, ordered list of a day's items (recurring + regular). Events are separate.
+  // key = todo.id for regular, "r:<id>" for recurring. New items append after the saved order.
+  const getDayItems = useCallback(
+    (dateStr) => {
+      const recurring = getRecurringForDate(dateStr).map((t) => ({
+        key: `r:${dateStr}:${t.id}`,
+        kind: 'recurring',
+        todo: t,
+      }));
+      const regular = (todos[dateStr] || []).map((t) => ({
+        key: t.id,
+        kind: 'todo',
+        todo: t,
+      }));
+      const all = [...recurring, ...regular];
+      const order = todoOrder[dateStr];
+      if (!order) return all;
+      const byKey = new Map(all.map((i) => [i.key, i]));
+      const ordered = [];
+      order.forEach((k) => {
+        if (byKey.has(k)) {
+          ordered.push(byKey.get(k));
+          byKey.delete(k);
+        }
+      });
+      byKey.forEach((i) => ordered.push(i));
+      return ordered;
+    },
+    [todos, getRecurringForDate, todoOrder],
+  );
+
+  const setDayOrder = useCallback(
+    (dateStr, keys) => setTodoOrder((prev) => ({ ...prev, [dateStr]: keys })),
+    [setTodoOrder],
   );
 
   const toggleRecurring = useCallback(
@@ -49,6 +86,24 @@ export default function useTodos() {
 
   const removeRecurring = useCallback(
     (id) => setRecurringTodos((prev) => prev.filter((t) => t.id !== id)),
+    [setRecurringTodos],
+  );
+
+  // Moves a recurring item's occurrence from one weekday to another by editing its days.
+  const moveRecurringDay = useCallback(
+    (id, fromDate, toDate) => {
+      const fromDow = parseDate(fromDate).getDay();
+      const toDow = parseDate(toDate).getDay();
+      if (fromDow === toDow) return;
+      setRecurringTodos((prev) =>
+        prev.map((t) => {
+          if (t.id !== id) return t;
+          const days = t.days.filter((d) => d !== fromDow);
+          if (!days.includes(toDow)) days.push(toDow);
+          return { ...t, days };
+        }),
+      );
+    },
     [setRecurringTodos],
   );
 
@@ -104,18 +159,37 @@ export default function useTodos() {
     [setTodos],
   );
 
+  const moveTodo = useCallback(
+    (fromDate, toDate, id) => {
+      setTodos((prev) => {
+        const item = (prev[fromDate] || []).find((t) => t.id === id);
+        if (!item) return prev;
+        return {
+          ...prev,
+          [fromDate]: (prev[fromDate] || []).filter((t) => t.id !== id),
+          [toDate]: [...(prev[toDate] || []), item],
+        };
+      });
+    },
+    [setTodos],
+  );
+
   return {
     calendarEvents,
     todos,
     recurringDone,
     getRecurringForDate,
+    getDayItems,
+    setDayOrder,
     toggleRecurring,
     addRecurring,
     removeRecurring,
+    moveRecurringDay,
     addEvent,
     removeEvent,
     addTodo,
     toggleTodo,
     removeTodo,
+    moveTodo,
   };
 }
