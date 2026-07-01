@@ -2,7 +2,6 @@ import { useState } from 'react';
 import TopBar from '../components/layout/TopBar';
 import DropdownMenu from '../components/common/DropdownMenu';
 import MealPlanWeek from '../components/meals/MealPlanWeek';
-import GroceryList from '../components/meals/GroceryList';
 import RecipeList from '../components/meals/RecipeList';
 import useMeals from '../hooks/useMeals';
 import { formatWeekLabel } from '../utils/dates';
@@ -10,7 +9,6 @@ import styles from './MealsPage.module.css';
 
 const VIEW_OPTIONS = [
   { value: 'plan', label: 'Meals' },
-  { value: 'groceries', label: 'Groceries' },
   { value: 'recipes', label: 'Recipes' },
 ];
 
@@ -34,9 +32,8 @@ export default function MealsPage() {
         }
       />
       {view === 'plan' && <MealPlanWeek {...data} />}
-      {view === 'groceries' && <GroceryList {...data} />}
       {view === 'recipes' && <RecipeList {...data} />}
-      {view !== 'recipes' && (
+      {view === 'plan' && (
         <div className={styles.weekNav}>
           <button onClick={() => data.navigateWeek(-1)}>‹</button>
           <span className={styles.weekLabel}>{formatWeekLabel(data.currentWeek)}</span>

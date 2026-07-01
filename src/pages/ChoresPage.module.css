@@ -1,0 +1,156 @@
+.container {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.emptyPage {
+  text-align: center;
+  color: var(--color-text-secondary);
+  padding: 32px 16px;
+}
+
+.card {
+  background: var(--color-surface);
+  border-radius: 10px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.inactive {
+  opacity: 0.55;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.setName {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.cadence {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.cardActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.editSet {
+  font-size: 0.75rem;
+  color: var(--color-primary);
+  padding: 4px 8px;
+}
+
+.deleteSet {
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  padding: 4px;
+}
+
+.nextDue {
+  font-size: 0.8rem;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+}
+
+.empty {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+}
+
+.itemList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.itemLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  cursor: pointer;
+}
+
+.itemLabel input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primary);
+}
+
+.done {
+  text-decoration: line-through;
+  color: var(--color-text-secondary);
+}
+
+.removeBtn {
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  padding: 4px;
+}
+
+.cadenceRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cadenceLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.intervalInput {
+  width: 60px;
+  padding: 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.unitSelect {
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  font-size: 0.9rem;
+  margin-top: auto;
+}
+
+.tasksInput {
+  padding: 10px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  outline: none;
+  width: 100%;
+  font-size: 0.95rem;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.tasksInput:focus {
+  border-color: var(--color-primary);
+}

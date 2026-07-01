@@ -17,6 +17,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { today, addDays, toDateStr, formatShortDate } from '../../utils/dates';
+import { UNSCHEDULED } from '../../hooks/useTodos';
 import styles from './TodoWeekView.module.css';
 
 function DroppableDayCard({ dateStr, highlight, children }) {
@@ -61,10 +62,12 @@ export default function TodoWeekView({
   removeRecurring,
   moveTodo,
   moveRecurringDay,
+  addTodo,
 }) {
   const todayStr = today();
-  const [active, setActive] = useState(null); // { id, kind, dateStr, text }
+  const [active, setActive] = useState(null);
   const [overDate, setOverDate] = useState(null);
+  const [backlogText, setBacklogText] = useState('');
 
   const days = useMemo(() => {
     const start = new Date();
@@ -97,6 +100,8 @@ export default function TodoWeekView({
       const overIsDay = over.data.current?.type === 'day';
       const toDate = over.data.current?.dateStr;
       if (!toDate) return;
+        if (kind === 'recurring' && toDate === UNSCHEDULED) return;
+        if (kind === 'recurring' && fromDate === UNSCHEDULED) return;
 
       if (fromDate === toDate) {
         if (overIsDay || a.id === over.id) return;
@@ -129,6 +134,17 @@ export default function TodoWeekView({
     },
     [getDayItems, setDayOrder, moveTodo, moveRecurringDay],
   );
+
+  const handleBacklogAdd = (e) => {
+    e.preventDefault();
+    if (!backlogText.trim()) return;
+    addTodo(UNSCHEDULED, backlogText.trim());
+    setBacklogText('');
+  };
+
+  const unscheduledItems = getDayItems(UNSCHEDULED);
+  const unscheduledHighlight =
+    overDate === UNSCHEDULED && active && active.kind === 'todo' && active.dateStr !== UNSCHEDULED;
 
   return (
     <DndContext
@@ -189,6 +205,36 @@ export default function TodoWeekView({
             </DroppableDayCard>
           );
         })}
+        <DroppableDayCard dateStr={UNSCHEDULED} highlight={unscheduledHighlight}>
+          <h3 className={styles.dayHeader}>Unscheduled</h3>
+          <div className={styles.backlogDropArea}>
+            <SortableContext
+              items={unscheduledItems.map((i) => i.key)}
+              strategy={verticalListSortingStrategy}
+            >
+              {unscheduledItems.map((item) => (
+                <SortableItem
+                  key={item.key}
+                  item={item}
+                  dateStr={UNSCHEDULED}
+                  isDone={item.todo.done}
+                  onToggle={() => toggleTodo(UNSCHEDULED, item.todo.id)}
+                  onRemove={() => removeTodo(UNSCHEDULED, item.todo.id)}
+                />
+              ))}
+            </SortableContext>
+          </div>
+          <form onSubmit={handleBacklogAdd} className={styles.addForm}>
+            <input
+              type="text"
+              value={backlogText}
+              onChange={(e) => setBacklogText(e.target.value)}
+              placeholder="Add to backlog..."
+              className={styles.addInput}
+            />
+            <button type="submit" className={styles.addBtn}>Add</button>
+          </form>
+        </DroppableDayCard>
       </div>
       <DragOverlay>
         {active ? (

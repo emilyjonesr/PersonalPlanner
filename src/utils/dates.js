@@ -77,3 +77,65 @@ export function isOlderThan(dateStr, days) {
   cutoff.setHours(0, 0, 0, 0);
   return date < cutoff;
 }
+
+export function formatCadence(cadence) {
+  const { unit, interval } = cadence;
+  if (unit === 'week') {
+    if (interval === 1) return 'Weekly';
+    return `Every ${interval} weeks`;
+  }
+  if (interval === 1) return 'Monthly';
+  return `Every ${interval} months`;
+}
+
+export function getChorePeriod(cadence, anchorStr, date = new Date()) {
+  const anchor = parseDate(anchorStr);
+  anchor.setHours(0, 0, 0, 0);
+
+  if (cadence.unit === 'week') {
+    const weekStart = getWeekStart(date);
+    const anchorWeek = getWeekStart(anchor);
+    const msPerWeek = 7 * 24 * 60 * 60 * 1000;
+    const weekDiff = Math.round((weekStart - anchorWeek) / msPerWeek);
+    const active = weekDiff >= 0 && weekDiff % cadence.interval === 0;
+    const key = toDateStr(weekStart);
+
+    let nextDate = weekStart;
+    if (!active) {
+      for (let w = 1; w <= 52; w++) {
+        const candidate = addDays(weekStart, w * 7);
+        const wd = Math.round((getWeekStart(candidate) - anchorWeek) / msPerWeek);
+        if (wd >= 0 && wd % cadence.interval === 0) {
+          nextDate = getWeekStart(candidate);
+          break;
+        }
+      }
+    }
+
+    return { active, key, nextDate };
+  }
+
+  const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
+  const monthDiff =
+    (monthStart.getFullYear() - anchor.getFullYear()) * 12 +
+    (monthStart.getMonth() - anchor.getMonth());
+  const active = monthDiff >= 0 && monthDiff % cadence.interval === 0;
+  const key = `${monthStart.getFullYear()}-${String(monthStart.getMonth() + 1).padStart(2, '0')}`;
+
+  let nextDate = monthStart;
+  if (!active) {
+    let cursor = addMonths(monthStart, 1);
+    for (let i = 0; i < 24; i++) {
+      const md =
+        (cursor.getFullYear() - anchor.getFullYear()) * 12 +
+        (cursor.getMonth() - anchor.getMonth());
+      if (md >= 0 && md % cadence.interval === 0) {
+        nextDate = cursor;
+        break;
+      }
+      cursor = addMonths(cursor, 1);
+    }
+  }
+
+  return { active, key, nextDate };
+}

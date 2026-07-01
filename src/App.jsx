@@ -3,6 +3,8 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import HabitsPage from './pages/HabitsPage';
 import TodosPage from './pages/TodosPage';
+import ChoresPage from './pages/ChoresPage';
+import ShoppingPage from './pages/ShoppingPage';
 import MealsPage from './pages/MealsPage';
 import { cleanupOldData } from './utils/cleanup';
 import { today } from './utils/dates';
@@ -23,6 +25,9 @@ export default function App() {
         <Route index element={<Navigate to="/habits" replace />} />
         <Route path="/habits" element={<HabitsPage />} />
         <Route path="/todos" element={<TodosPage />} />
+        <Route path="/chores" element={<ChoresPage />} />
+        <Route path="/habits" element={<HabitsPage />} />
+        <Route path="/shopping" element={<ShoppingPage />} />
         <Route path="/meals" element={<MealsPage />} />
       </Route>
     </Routes>
