@@ -3,12 +3,12 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: var(--nav-height);
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* align to top of nav so items sit in the 60px tap area */
   background: var(--color-surface);
   border-top: 1px solid var(--color-border);
   z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .tab {
@@ -20,7 +20,7 @@
   gap: 3px;
   text-decoration: none;
   color: var(--color-text-secondary);
-  height: 100%;
+  height: var(--nav-height);
   transition: color 0.2s;
 }
 
@@ -38,6 +38,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  height: var(--nav-height);
   text-decoration: none;
 }
 

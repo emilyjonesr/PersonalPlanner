@@ -1,6 +1,6 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import useLocalStorage from './useLocalStorage';
-import { parseDate, genId } from '../utils/dates';
+import { parseDate, genId, today, toDateStr, addDays } from '../utils/dates';
 
 export const UNSCHEDULED = 'unscheduled';
 
@@ -26,7 +26,8 @@ export default function useTodos() {
   );
 
   // Unified, ordered list of a day's items (recurring + regular). Events are separate.
-  // key = todo.id for regular, "r:<id>" for recurring. New items append after the saved order.
+  // key = todo.id for regular, "r:<dateStr>:<id>" for recurring. New items append after saved order.
+  // Done items always sort to the bottom within their existing order.
   const getDayItems = useCallback(
     (dateStr) => {
       const recurring = getRecurringForDate(dateStr).map((t) => ({
@@ -41,19 +42,23 @@ export default function useTodos() {
       }));
       const all = [...recurring, ...regular];
       const order = todoOrder[dateStr];
-      if (!order) return all;
-      const byKey = new Map(all.map((i) => [i.key, i]));
-      const ordered = [];
-      order.forEach((k) => {
-        if (byKey.has(k)) {
-          ordered.push(byKey.get(k));
-          byKey.delete(k);
-        }
-      });
-      byKey.forEach((i) => ordered.push(i));
-      return ordered;
+      let ordered;
+      if (!order) {
+        ordered = all;
+      } else {
+        const byKey = new Map(all.map((i) => [i.key, i]));
+        ordered = [];
+        order.forEach((k) => {
+          if (byKey.has(k)) { ordered.push(byKey.get(k)); byKey.delete(k); }
+        });
+        byKey.forEach((i) => ordered.push(i));
+      }
+      const doneIds = new Set(recurringDone[dateStr] || []);
+      const isDone = (item) =>
+        item.kind === 'todo' ? item.todo.done : doneIds.has(item.todo.id);
+      return ordered.sort((a, b) => Number(isDone(a)) - Number(isDone(b)));
     },
-    [todos, getRecurringForDate, todoOrder],
+    [todos, getRecurringForDate, todoOrder, recurringDone],
   );
 
   const setDayOrder = useCallback(
@@ -175,6 +180,42 @@ export default function useTodos() {
     },
     [setTodos],
   );
+
+  // On first open of each new day: carry yesterday's undone items to today,
+  // then delete all past-date entries (we don't need them after that).
+  useEffect(() => {
+    const PUNT_KEY = 'lastPuntDate';
+    const todayStr = today();
+    const alreadyPunted = localStorage.getItem(PUNT_KEY) === todayStr;
+    const yesterdayStr = toDateStr(addDays(new Date(), -1));
+
+    setTodos((prev) => {
+      const pastDates = Object.keys(prev).filter(
+        (d) => d !== UNSCHEDULED && d < todayStr,
+      );
+      if (!pastDates.length) return prev;
+      const next = { ...prev };
+      pastDates.forEach((d) => {
+        if (!alreadyPunted && d === yesterdayStr) {
+          const undone = prev[d].filter((t) => !t.done);
+          if (undone.length) next[todayStr] = [...(next[todayStr] || []), ...undone];
+        }
+        delete next[d];
+      });
+      return next;
+    });
+    setTodoOrder((prev) => {
+      const pastDates = Object.keys(prev).filter(
+        (d) => d !== UNSCHEDULED && d < todayStr,
+      );
+      if (!pastDates.length) return prev;
+      const next = { ...prev };
+      pastDates.forEach((d) => delete next[d]);
+      return next;
+    });
+
+    if (!alreadyPunted) localStorage.setItem(PUNT_KEY, todayStr);
+  }, [setTodos, setTodoOrder]); // stable setters — runs effectively once on mount
 
   return {
     calendarEvents,

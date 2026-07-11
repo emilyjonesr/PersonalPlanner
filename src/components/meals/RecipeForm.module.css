@@ -79,3 +79,47 @@
   border-radius: 8px;
   font-weight: 500;
 }
+
+.tagSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tagLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.tagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  border: 1px solid transparent;
+  color: var(--color-text-secondary);
+  background: var(--color-bg);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Unselected: subtle tint per color */
+.tag_green { border-color: #a5d6a7; }
+.tag_amber { border-color: #ffe082; }
+.tag_blue  { border-color: #90caf9; }
+.tag_red   { border-color: #ef9a9a; }
+.tag_base  { border-color: #ce93d8; }
+
+/* Selected */
+.tagActive.tag_green { background: #e8f5e9; color: #2e7d32; border-color: #2e7d32; font-weight: 500; }
+.tagActive.tag_amber { background: #fff8e1; color: #f57f17; border-color: #f57f17; font-weight: 500; }
+.tagActive.tag_blue  { background: #e3f2fd; color: #1565c0; border-color: #1565c0; font-weight: 500; }
+.tagActive.tag_red   { background: #fce4ec; color: #c62828; border-color: #c62828; font-weight: 500; }
+.tagActive.tag_base  { background: #f3f0ff; color: #5e35b1; border-color: #5e35b1; font-weight: 500; }

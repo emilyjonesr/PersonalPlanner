@@ -1,6 +1,20 @@
 import { useState } from 'react';
-import RecipeForm from './RecipeForm';
+import RecipeForm, { MEAT_TAGS, BASE_TAGS } from './RecipeForm';
 import styles from './RecipeList.module.css';
+
+function TagBadge({ group, value }) {
+  const def =
+    group === 'meat'
+      ? MEAT_TAGS.find((t) => t.value === value)
+      : BASE_TAGS.find((t) => t.value === value);
+  if (!def) return null;
+  const colorClass = group === 'meat' ? styles[`badge_${def.color}`] : styles.badge_base;
+  return (
+    <span className={`${styles.tag} ${colorClass}`}>
+      {def.icon} {value}
+    </span>
+  );
+}
 
 export default function RecipeList({
   recipes,
@@ -26,9 +40,17 @@ export default function RecipeList({
             onClick={() => setExpanded(expanded === r.id ? null : r.id)}
           >
             <span className={styles.name}>{r.name}</span>
-            <span className={styles.count}>
-              {r.ingredients.length} item{r.ingredients.length !== 1 ? 's' : ''}
-            </span>
+            <div className={styles.cardMeta}>
+              {(r.tags?.meat || r.tags?.base) && (
+                <span className={styles.tags}>
+                  {r.tags.meat && <TagBadge group="meat" value={r.tags.meat} />}
+                  {r.tags.base && <TagBadge group="base" value={r.tags.base} />}
+                </span>
+              )}
+              <span className={styles.count}>
+                {r.ingredients.length} item{r.ingredients.length !== 1 ? 's' : ''}
+              </span>
+            </div>
           </button>
           {expanded === r.id && (
             <div className={styles.details}>
@@ -59,10 +81,10 @@ export default function RecipeList({
         open={editing !== null}
         onClose={() => setEditing(null)}
         recipe={editing !== 'new' ? editing : null}
-        onSave={(name, ingredients) => {
+        onSave={(name, ingredients, tags) => {
           if (editing && editing !== 'new')
-            updateRecipe(editing.id, name, ingredients);
-          else addRecipe(name, ingredients);
+            updateRecipe(editing.id, name, ingredients, tags);
+          else addRecipe(name, ingredients, tags);
           setEditing(null);
         }}
       />

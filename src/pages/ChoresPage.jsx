@@ -32,19 +32,21 @@ function ChoreSetCard({ set, choreDone, onToggle, onRemoveSet, onEdit }) {
         </p>
       )}
       <ul className={styles.itemList}>
-        {set.items.map((item) => (
-          <li key={item.id} className={styles.item}>
-            <label className={styles.itemLabel}>
-              <input
-                type="checkbox"
-                checked={doneIds.includes(item.id)}
-                disabled={!period.active}
-                onChange={() => onToggle(set.id, period.key, item.id)}
-              />
-              <span className={doneIds.includes(item.id) ? styles.done : ''}>{item.name}</span>
-            </label>
-          </li>
-        ))}
+        {[...set.items]
+          .sort((a, b) => Number(doneIds.includes(a.id)) - Number(doneIds.includes(b.id)))
+          .map((item) => (
+            <li key={item.id} className={styles.item}>
+              <label className={styles.itemLabel}>
+                <input
+                  type="checkbox"
+                  checked={doneIds.includes(item.id)}
+                  disabled={!period.active}
+                  onChange={() => onToggle(set.id, period.key, item.id)}
+                />
+                <span className={doneIds.includes(item.id) ? styles.done : ''}>{item.name}</span>
+              </label>
+            </li>
+          ))}
       </ul>
     </div>
   );

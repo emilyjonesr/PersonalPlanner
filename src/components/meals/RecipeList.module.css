@@ -36,6 +36,34 @@
   text-align: left;
 }
 
+.cardMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tags {
+  display: flex;
+  gap: 4px;
+}
+
+.tag {
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-weight: 500;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.badge_green { background: #e8f5e9; color: #2e7d32; }
+.badge_amber { background: #fff8e1; color: #f57f17; }
+.badge_blue  { background: #e3f2fd; color: #1565c0; }
+.badge_red   { background: #fce4ec; color: #c62828; }
+.badge_base  { background: #f3f0ff; color: #5e35b1; }
+
 .name {
   font-weight: 500;
 }

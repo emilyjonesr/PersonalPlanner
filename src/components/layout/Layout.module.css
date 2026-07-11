@@ -6,6 +6,6 @@
 
 .main {
   flex: 1;
-  padding-bottom: var(--nav-height);
+  padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px));
   overflow-y: auto;
 }

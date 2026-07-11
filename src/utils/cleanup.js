@@ -3,8 +3,7 @@ import { isOlderThan } from './dates';
 const RETENTION_DAYS = 30;
 
 export function cleanupOldData() {
-  cleanupByDateKeys('todos', RETENTION_DAYS);
-  cleanupByDateKeys('todoOrder', RETENTION_DAYS);
+  // todos/todoOrder are cleaned up daily by useTodos on mount — no need here.
   cleanupByDateKeys('recurringDone', RETENTION_DAYS);
   cleanupByDateKeys('mealPlans', RETENTION_DAYS);
   cleanupByDateKeys('groceryOverrides', RETENTION_DAYS);

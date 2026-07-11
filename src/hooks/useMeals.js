@@ -29,19 +29,19 @@ export default function useMeals() {
   }, []);
 
   const addRecipe = useCallback(
-    (name, ingredients) => {
+    (name, ingredients, tags) => {
       setRecipes((prev) => [
         ...prev,
-        { id: genId(), name, ingredients },
+        { id: genId(), name, ingredients, tags: tags || {} },
       ]);
     },
     [setRecipes],
   );
 
   const updateRecipe = useCallback(
-    (id, name, ingredients) => {
+    (id, name, ingredients, tags) => {
       setRecipes((prev) =>
-        prev.map((r) => (r.id === id ? { ...r, name, ingredients } : r)),
+        prev.map((r) => (r.id === id ? { ...r, name, ingredients, tags: tags || {} } : r)),
       );
     },
     [setRecipes],

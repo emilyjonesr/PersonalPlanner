@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useState } from 'react';
+import { useMemo, useCallback, useState, useRef, useLayoutEffect } from 'react';
 import {
   DndContext,
   DragOverlay,
@@ -34,9 +34,44 @@ function SortableItem({ item, dateStr, isDone, onToggle, onRemove }) {
     id: item.key,
     data: { kind: item.kind, dateStr, todoId: item.todo.id, text: item.todo.text },
   });
+
+  // FLIP animation: when this item changes vertical position (e.g. sinks after being checked),
+  // animate from the old position to the new one instead of snapping.
+  const elRef = useRef(null);
+  const prevTopRef = useRef(null);
+  const animRef = useRef(null);
+
+  const setRef = useCallback((el) => {
+    elRef.current = el;
+    setNodeRef(el);
+  }, [setNodeRef]);
+
+  useLayoutEffect(() => {
+    const el = elRef.current;
+    if (!el) return;
+    if (isDragging) { prevTopRef.current = null; return; }
+
+    // Skip if our previous FLIP animation is still running — reading mid-animation
+    // position would create a conflicting animation from the wrong spot.
+    const state = animRef.current?.playState;
+    if (state === 'running' || state === 'pending') return;
+
+    const newTop = el.getBoundingClientRect().top;
+    if (prevTopRef.current !== null) {
+      const delta = prevTopRef.current - newTop;
+      if (Math.abs(delta) > 2) {
+        animRef.current = el.animate(
+          [{ transform: `translateY(${delta}px)` }, { transform: 'none' }],
+          { duration: 320, easing: 'cubic-bezier(0.4, 0, 0.2, 1)' },
+        );
+      }
+    }
+    prevTopRef.current = newTop;
+  });
+
   return (
     <div
-      ref={setNodeRef}
+      ref={setRef}
       style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0 : 1 }}
       className={styles.todo}
     >
