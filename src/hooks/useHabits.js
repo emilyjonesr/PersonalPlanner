@@ -50,7 +50,22 @@ export default function useHabits() {
 
   const removeHabit = useCallback(
     (id) => {
-      setHabits((prev) => prev.filter((h) => h.id !== id));
+      setHabits((prev) => prev.filter((h) => h.id !== id).map((h, i) => ({ ...h, order: i })));
+    },
+    [setHabits],
+  );
+
+  const reorderHabits = useCallback(
+    (orderedIds) => {
+      setHabits((prev) => {
+        const byId = new Map(prev.map((h) => [h.id, h]));
+        return orderedIds
+          .map((id, i) => {
+            const h = byId.get(id);
+            return h ? { ...h, order: i } : null;
+          })
+          .filter(Boolean);
+      });
     },
     [setHabits],
   );
@@ -69,6 +84,7 @@ export default function useHabits() {
     toggleHabit,
     addHabit,
     removeHabit,
+    reorderHabits,
     toggleHabitLog,
   };
 }

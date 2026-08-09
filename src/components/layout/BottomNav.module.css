@@ -1,14 +1,13 @@
 .nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  /* In-flow at the bottom of the pinned shell — no position:fixed (avoids iOS gap bugs) */
+  flex-shrink: 0;
   display: flex;
-  align-items: flex-start; /* align to top of nav so items sit in the 60px tap area */
+  align-items: flex-start;
   background: var(--color-surface);
   border-top: 1px solid var(--color-border);
   z-index: 100;
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  /* 34px = iPhone 15 Pro home indicator when env() is unavailable */
+  padding-bottom: var(--safe-bottom);
 }
 
 .tab {

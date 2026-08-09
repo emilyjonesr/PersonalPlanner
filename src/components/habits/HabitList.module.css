@@ -14,10 +14,30 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
   background: var(--color-surface);
   padding: 12px 16px;
   border-radius: 10px;
   box-shadow: 0 1px 3px var(--color-shadow);
+}
+
+.dragHandle {
+  color: var(--color-border);
+  font-size: 1rem;
+  cursor: grab;
+  padding: 4px 2px;
+  flex-shrink: 0;
+  touch-action: none;
+  user-select: none;
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+.dragOverlay {
+  box-shadow: 0 4px 16px var(--color-shadow-strong);
+  cursor: grabbing;
 }
 
 .label {

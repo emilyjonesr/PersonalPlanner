@@ -4,7 +4,8 @@
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
   z-index: 50;
-  padding-top: env(safe-area-inset-top, 0px);
+  /* 59px = iPhone 15 Pro Dynamic Island when env() is unavailable */
+  padding-top: var(--safe-top);
 }
 
 .actions {
