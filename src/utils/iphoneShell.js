@@ -1,40 +1,42 @@
 /**
  * iPhone 15 Pro / standalone PWA shell.
- * Pins #root to the visual viewport and removes any leftover gap under the nav.
+ * Fill the real screen edge-to-edge so no grey (--color-bg) strip shows under the nav.
  */
 export function initIphoneShell() {
   const root = document.getElementById('root');
   if (!root) return;
 
   const sync = () => {
+    // Prefer the largest credible height — visualViewport alone is often short
+    // on iPhone and leaves a grey strip under the tab bar.
     const vv = window.visualViewport;
-    const top = vv ? vv.offsetTop : 0;
-    const height = vv ? vv.height : window.innerHeight;
+    const height = Math.max(
+      window.innerHeight || 0,
+      document.documentElement.clientHeight || 0,
+      vv ? Math.round(vv.height + vv.offsetTop) : 0,
+    );
 
     root.style.position = 'fixed';
     root.style.left = '0';
     root.style.right = '0';
+    root.style.top = '0';
+    root.style.bottom = '0';
     root.style.width = '100%';
-    root.style.top = `${top}px`;
-    root.style.height = `${Math.round(height)}px`;
-    root.style.bottom = 'auto';
+    root.style.height = `${height}px`;
+    root.style.minHeight = '100%';
+    root.style.maxHeight = 'none';
 
     requestAnimationFrame(() => {
       const nav = document.querySelector('[data-bottom-nav]');
       if (!nav) return;
 
-      // Kill any gap between the nav's bottom edge and the visible screen bottom
-      const screenBottom = top + height;
-      const navBottom = nav.getBoundingClientRect().bottom;
-      const gap = screenBottom - navBottom;
-      if (gap > 1) {
-        root.style.height = `${Math.round(height + gap)}px`;
-      }
+      nav.style.paddingBottom = '0px';
 
-      // If WebKit applied safe-area padding somehow, zero it — we intentionally
-      // don't reserve a dead strip under the tabs on this device.
-      if (parseFloat(getComputedStyle(nav).paddingBottom) > 0) {
-        nav.style.paddingBottom = '0px';
+      // If anything still peeks below the nav, grow the root to cover it
+      const gap = window.innerHeight - nav.getBoundingClientRect().bottom;
+      if (gap > 0.5) {
+        const current = root.getBoundingClientRect().height;
+        root.style.height = `${Math.ceil(current + gap)}px`;
       }
     });
   };
@@ -53,6 +55,7 @@ export function initIphoneShell() {
       setTimeout(sync, 300);
     }
   });
-  setTimeout(sync, 100);
-  setTimeout(sync, 500);
+  setTimeout(sync, 50);
+  setTimeout(sync, 200);
+  setTimeout(sync, 600);
 }

@@ -1,12 +1,14 @@
 .nav {
+  position: relative;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   background: var(--color-surface);
   border-top: 1px solid var(--color-border);
   z-index: 100;
-  /* No safe-area padding — it was creating the permanent empty strip on iPhone 15 Pro */
   padding-bottom: 0;
+  /* Fill any leftover home-indicator strip in the same color as the bar */
+  box-shadow: 0 40px 0 40px var(--color-surface);
 }
 
 .tab {

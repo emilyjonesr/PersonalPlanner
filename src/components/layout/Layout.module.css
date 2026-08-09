@@ -4,7 +4,7 @@
   height: 100%;
   width: 100%;
   overflow: hidden;
-  background: var(--color-bg);
+  background: var(--color-surface);
 }
 
 .main {
@@ -12,6 +12,6 @@
   min-height: 0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  /* Nav is in normal flow now — only leave a little room for the raised Daily button */
   padding-bottom: 20px;
+  background: var(--color-bg);
 }

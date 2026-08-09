@@ -63,15 +63,16 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: var(--color-bg);
+  /* Bottom strip under the tab bar must match the nav (white / surface), not grey bg */
+  background: var(--color-surface);
   color: var(--color-text);
   overscroll-behavior: none;
 }
 
-/* Sized precisely by initIphoneShell() to the visual viewport */
+/* Content area stays grey; bottom of the shell paints surface so no grey peeks out */
 #root {
   overflow: hidden;
-  background: var(--color-bg);
+  background: var(--color-surface);
 }
 
 button {
