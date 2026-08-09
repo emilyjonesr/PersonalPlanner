@@ -34,7 +34,7 @@
   background: var(--color-surface);
   outline: none;
   width: 100%;
-  font-size: 1rem;
+  font-size: 16px;
 }
 
 .modalInput:focus {
