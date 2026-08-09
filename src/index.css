@@ -18,9 +18,9 @@
   --color-shadow: rgba(0, 0, 0, 0.06);
   --color-shadow-strong: rgba(0, 0, 0, 0.15);
   --color-backdrop: rgba(0, 0, 0, 0.4);
-  --nav-height: 60px;
-  /* iPhone 15 Pro home-indicator / Dynamic Island fallbacks if env() is late */
-  --safe-bottom: env(safe-area-inset-bottom, 34px);
+  --nav-height: 52px;
+  /* Top only — Dynamic Island. Bottom safe-area was doubling on iPhone and
+     creating the permanent empty strip under the tab bar. */
   --safe-top: env(safe-area-inset-top, 59px);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   color: var(--color-text);
@@ -57,23 +57,21 @@ html[data-theme="dark"] {
   }
 }
 
-/*
-  Pin the entire app to the visual screen edges.
-  This is the reliable iPhone PWA shell — no vh/svh/innerHeight guessing,
-  so the bottom nav can't float above a phantom gap.
-*/
 html,
-body,
-#root {
-  position: fixed;
-  inset: 0;
+body {
+  margin: 0;
   width: 100%;
   height: 100%;
   overflow: hidden;
   background: var(--color-bg);
   color: var(--color-text);
-  /* iPhone 15 Pro logical size: 393×852 — keeps layout stable in standalone */
   overscroll-behavior: none;
+}
+
+/* Sized precisely by initIphoneShell() to the visual viewport */
+#root {
+  overflow: hidden;
+  background: var(--color-bg);
 }
 
 button {

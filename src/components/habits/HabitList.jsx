@@ -59,7 +59,7 @@ export default function HabitList({ habits, habitToday, toggleHabit, removeHabit
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 120, tolerance: 8 } }),
   );
 
   const handleDragStart = useCallback(({ active }) => {

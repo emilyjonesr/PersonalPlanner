@@ -1,13 +1,12 @@
 .nav {
-  /* In-flow at the bottom of the pinned shell — no position:fixed (avoids iOS gap bugs) */
   flex-shrink: 0;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   background: var(--color-surface);
   border-top: 1px solid var(--color-border);
   z-index: 100;
-  /* 34px = iPhone 15 Pro home indicator when env() is unavailable */
-  padding-bottom: var(--safe-bottom);
+  /* No safe-area padding — it was creating the permanent empty strip on iPhone 15 Pro */
+  padding-bottom: 0;
 }
 
 .tab {
@@ -16,7 +15,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
+  gap: 2px;
   text-decoration: none;
   color: var(--color-text-secondary);
   height: var(--nav-height);

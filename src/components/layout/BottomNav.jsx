@@ -49,7 +49,7 @@ const tabs = [
 
 export default function BottomNav() {
   return (
-    <nav className={styles.nav}>
+    <nav className={styles.nav} data-bottom-nav>
       {tabs.map(({ to, label, Icon, center }) => (
         <NavLink
           key={to}
