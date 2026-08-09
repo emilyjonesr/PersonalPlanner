@@ -8,9 +8,11 @@ const DAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 export default function TodoForm({ open, onClose, onAddTodo, onAddEvent, onAddRecurring }) {
   const [type, setType] = useState('todo');
   const [recurring, setRecurring] = useState(false);
+  const [recurMode, setRecurMode] = useState('weekly'); // 'weekly' | 'monthly'
   const [text, setText] = useState('');
   const [date, setDate] = useState(today());
   const [selectedDays, setSelectedDays] = useState([]);
+  const [monthDay, setMonthDay] = useState(1);
 
   const toggleDay = (i) =>
     setSelectedDays((prev) =>
@@ -21,6 +23,8 @@ export default function TodoForm({ open, onClose, onAddTodo, onAddEvent, onAddRe
     setText('');
     setDate(today());
     setSelectedDays([]);
+    setMonthDay(1);
+    setRecurMode('weekly');
     setRecurring(false);
     setType('todo');
   };
@@ -28,8 +32,15 @@ export default function TodoForm({ open, onClose, onAddTodo, onAddEvent, onAddRe
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!text.trim()) return;
-    if (recurring && selectedDays.length > 0) {
-      onAddRecurring(text.trim(), selectedDays);
+    if (recurring) {
+      if (recurMode === 'monthly') {
+        const day = Math.min(31, Math.max(1, Number(monthDay) || 1));
+        onAddRecurring(text.trim(), { monthDay: day });
+      } else if (selectedDays.length > 0) {
+        onAddRecurring(text.trim(), { days: selectedDays });
+      } else {
+        return;
+      }
     } else if (type === 'todo') {
       onAddTodo(date, text.trim());
     } else {
@@ -40,6 +51,12 @@ export default function TodoForm({ open, onClose, onAddTodo, onAddEvent, onAddRe
   };
 
   const handleClose = () => { reset(); onClose(); };
+
+  const canSubmit = text.trim() && (
+    !recurring
+    || (recurMode === 'weekly' && selectedDays.length > 0)
+    || recurMode === 'monthly'
+  );
 
   return (
     <Modal open={open} onClose={handleClose} title="Add Item">
@@ -72,18 +89,50 @@ export default function TodoForm({ open, onClose, onAddTodo, onAddEvent, onAddRe
         </div>
 
         {recurring ? (
-          <div className={styles.dayPicker}>
-            {DAYS.map((label, i) => (
+          <>
+            <div className={styles.typeToggle}>
               <button
-                key={i}
                 type="button"
-                className={`${styles.dayBtn} ${selectedDays.includes(i) ? styles.dayActive : ''}`}
-                onClick={() => toggleDay(i)}
+                className={`${styles.typeBtn} ${recurMode === 'weekly' ? styles.active : ''}`}
+                onClick={() => setRecurMode('weekly')}
               >
-                {label}
+                Weekly
               </button>
-            ))}
-          </div>
+              <button
+                type="button"
+                className={`${styles.typeBtn} ${recurMode === 'monthly' ? styles.active : ''}`}
+                onClick={() => setRecurMode('monthly')}
+              >
+                Monthly
+              </button>
+            </div>
+            {recurMode === 'weekly' ? (
+              <div className={styles.dayPicker}>
+                {DAYS.map((label, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    className={`${styles.dayBtn} ${selectedDays.includes(i) ? styles.dayActive : ''}`}
+                    onClick={() => toggleDay(i)}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <label className={styles.monthDayRow}>
+                <span className={styles.monthDayLabel}>Day of month</span>
+                <input
+                  type="number"
+                  min={1}
+                  max={31}
+                  value={monthDay}
+                  onChange={(e) => setMonthDay(e.target.value)}
+                  className={styles.monthDayInput}
+                />
+              </label>
+            )}
+          </>
         ) : (
           <input
             type="date"
@@ -97,11 +146,17 @@ export default function TodoForm({ open, onClose, onAddTodo, onAddEvent, onAddRe
           type="text"
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder={recurring ? 'What repeats?' : type === 'todo' ? 'What do you need to do?' : "What's the event?"}
+          placeholder={
+            recurring
+              ? (recurMode === 'monthly' ? 'e.g. Pay bills' : 'What repeats?')
+              : type === 'todo'
+                ? 'What do you need to do?'
+                : "What's the event?"
+          }
           className={styles.textInput}
           autoFocus
         />
-        <button type="submit" className={styles.submit}>
+        <button type="submit" className={styles.submit} disabled={!canSubmit}>
           Add {recurring ? 'Recurring' : type === 'todo' ? 'To-Do' : 'Event'}
         </button>
       </form>

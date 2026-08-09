@@ -1,0 +1,14 @@
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  color: var(--color-primary);
+  transition: background 0.15s;
+}
+
+.toggle:active {
+  background: var(--color-primary-light);
+}

@@ -87,10 +87,42 @@
   border-color: var(--color-primary);
 }
 
+.monthDayRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.monthDayLabel {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.monthDayInput {
+  width: 72px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  outline: none;
+  text-align: center;
+}
+
+.monthDayInput:focus {
+  border-color: var(--color-primary);
+}
+
 .submit {
   padding: 12px;
   background: var(--color-primary);
   color: white;
   border-radius: 8px;
   font-weight: 500;
+}
+
+.submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

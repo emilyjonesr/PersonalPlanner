@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import useLocalStorage from './useLocalStorage';
-import { parseDate, genId, today, toDateStr, addDays } from '../utils/dates';
+import { parseDate, genId, today } from '../utils/dates';
 
 export const UNSCHEDULED = 'unscheduled';
 
@@ -19,8 +19,16 @@ export default function useTodos() {
 
   const getRecurringForDate = useCallback(
     (dateStr) => {
-      const day = parseDate(dateStr).getDay();
-      return recurringTodos.filter((t) => t.days.includes(day));
+      const date = parseDate(dateStr);
+      const dow = date.getDay();
+      const dom = date.getDate();
+      const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+      return recurringTodos.filter((t) => {
+        if (t.monthDay != null) {
+          return Math.min(t.monthDay, lastDay) === dom;
+        }
+        return Array.isArray(t.days) && t.days.includes(dow);
+      });
     },
     [recurringTodos],
   );
@@ -82,11 +90,14 @@ export default function useTodos() {
   );
 
   const addRecurring = useCallback(
-    (text, days) => {
-      setRecurringTodos((prev) => [
-        ...prev,
-        { id: genId(), text, days },
-      ]);
+    (text, opts) => {
+      const item = { id: genId(), text };
+      if (opts && opts.monthDay != null) {
+        item.monthDay = Math.min(31, Math.max(1, Number(opts.monthDay) || 1));
+      } else {
+        item.days = Array.isArray(opts?.days) ? opts.days : (Array.isArray(opts) ? opts : []);
+      }
+      setRecurringTodos((prev) => [...prev, item]);
     },
     [setRecurringTodos],
   );
@@ -97,6 +108,7 @@ export default function useTodos() {
   );
 
   // Moves a recurring item's occurrence from one weekday to another by editing its days.
+  // Monthly (day-of-month) items are not rewritten by drag.
   const moveRecurringDay = useCallback(
     (id, fromDate, toDate) => {
       const fromDow = parseDate(fromDate).getDay();
@@ -105,7 +117,8 @@ export default function useTodos() {
       setRecurringTodos((prev) =>
         prev.map((t) => {
           if (t.id !== id) return t;
-          const days = t.days.filter((d) => d !== fromDow);
+          if (t.monthDay != null) return t;
+          const days = (t.days || []).filter((d) => d !== fromDow);
           if (!days.includes(toDow)) days.push(toDow);
           return { ...t, days };
         }),
@@ -181,13 +194,12 @@ export default function useTodos() {
     [setTodos],
   );
 
-  // On first open of each new day: carry yesterday's undone items to today,
+  // On first open of each new day: carry all past undone items to today,
   // then delete all past-date entries (we don't need them after that).
   useEffect(() => {
     const PUNT_KEY = 'lastPuntDate';
     const todayStr = today();
     const alreadyPunted = localStorage.getItem(PUNT_KEY) === todayStr;
-    const yesterdayStr = toDateStr(addDays(new Date(), -1));
 
     setTodos((prev) => {
       const pastDates = Object.keys(prev).filter(
@@ -195,13 +207,11 @@ export default function useTodos() {
       );
       if (!pastDates.length) return prev;
       const next = { ...prev };
-      pastDates.forEach((d) => {
-        if (!alreadyPunted && d === yesterdayStr) {
-          const undone = prev[d].filter((t) => !t.done);
-          if (undone.length) next[todayStr] = [...(next[todayStr] || []), ...undone];
-        }
-        delete next[d];
-      });
+      if (!alreadyPunted) {
+        const allUndone = pastDates.flatMap((d) => (prev[d] || []).filter((t) => !t.done));
+        if (allUndone.length) next[todayStr] = [...(next[todayStr] || []), ...allUndone];
+      }
+      pastDates.forEach((d) => delete next[d]);
       return next;
     });
     setTodoOrder((prev) => {

@@ -20,6 +20,9 @@ import { today, addDays, toDateStr, formatShortDate } from '../../utils/dates';
 import { UNSCHEDULED } from '../../hooks/useTodos';
 import styles from './TodoWeekView.module.css';
 
+const FLIP_MS = 280;
+const FLIP_EASING = 'cubic-bezier(0.4, 0, 0.2, 1)';
+
 function DroppableDayCard({ dateStr, highlight, children }) {
   const { setNodeRef } = useDroppable({ id: `day:${dateStr}`, data: { type: 'day', dateStr } });
   return (
@@ -29,50 +32,73 @@ function DroppableDayCard({ dateStr, highlight, children }) {
   );
 }
 
-function SortableItem({ item, dateStr, isDone, onToggle, onRemove }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-    id: item.key,
-    data: { kind: item.kind, dateStr, todoId: item.todo.id, text: item.todo.text },
-  });
+/** Runs a coordinated FLIP when the ordered key list changes (e.g. check-off sink). */
+function useListFlip(itemKeys, containerRef, skip) {
+  const prevTopsRef = useRef(new Map());
+  const prevKeysRef = useRef('');
+  const animsRef = useRef([]);
 
-  // FLIP animation: when this item changes vertical position (e.g. sinks after being checked),
-  // animate from the old position to the new one instead of snapping.
-  const elRef = useRef(null);
-  const prevTopRef = useRef(null);
-  const animRef = useRef(null);
-
-  const setRef = useCallback((el) => {
-    elRef.current = el;
-    setNodeRef(el);
-  }, [setNodeRef]);
+  const signature = itemKeys.join('|');
 
   useLayoutEffect(() => {
-    const el = elRef.current;
-    if (!el) return;
-    if (isDragging) { prevTopRef.current = null; return; }
-
-    // Skip if our previous FLIP animation is still running — reading mid-animation
-    // position would create a conflicting animation from the wrong spot.
-    const state = animRef.current?.playState;
-    if (state === 'running' || state === 'pending') return;
-
-    const newTop = el.getBoundingClientRect().top;
-    if (prevTopRef.current !== null) {
-      const delta = prevTopRef.current - newTop;
-      if (Math.abs(delta) > 2) {
-        animRef.current = el.animate(
-          [{ transform: `translateY(${delta}px)` }, { transform: 'none' }],
-          { duration: 320, easing: 'cubic-bezier(0.4, 0, 0.2, 1)' },
-        );
+    const container = containerRef.current;
+    if (!container || skip) {
+      if (skip) {
+        prevTopsRef.current = new Map();
+        prevKeysRef.current = '';
+        animsRef.current.forEach((a) => a.cancel());
+        animsRef.current = [];
       }
+      return;
     }
-    prevTopRef.current = newTop;
+
+    const nodes = container.querySelectorAll('[data-flip-key]');
+    const nextTops = new Map();
+    nodes.forEach((el) => {
+      nextTops.set(el.getAttribute('data-flip-key'), el.getBoundingClientRect().top);
+    });
+
+    const keysChanged = prevKeysRef.current !== '' && prevKeysRef.current !== signature;
+    if (keysChanged && prevTopsRef.current.size) {
+      animsRef.current.forEach((a) => a.cancel());
+      animsRef.current = [];
+
+      nodes.forEach((el) => {
+        const key = el.getAttribute('data-flip-key');
+        const prevTop = prevTopsRef.current.get(key);
+        if (prevTop == null) return;
+        const delta = prevTop - nextTops.get(key);
+        if (Math.abs(delta) <= 2) return;
+        const anim = el.animate(
+          [{ transform: `translateY(${delta}px)` }, { transform: 'none' }],
+          { duration: FLIP_MS, easing: FLIP_EASING },
+        );
+        animsRef.current.push(anim);
+      });
+    }
+
+    prevTopsRef.current = nextTops;
+    prevKeysRef.current = signature;
   });
+}
+
+function SortableItem({ item, isDone, onToggle, onRemove, isDraggingAny }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: item.key,
+    data: { kind: item.kind, dateStr: item.dateStr, todoId: item.todo.id, text: item.todo.text },
+  });
+
+  // Don't apply dnd-kit transform/transition while a list FLIP may be running
+  // after check-off; only use them during an active drag.
+  const style = isDraggingAny
+    ? { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0 : 1 }
+    : { opacity: 1 };
 
   return (
     <div
-      ref={setRef}
-      style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0 : 1 }}
+      ref={setNodeRef}
+      data-flip-key={item.key}
+      style={style}
       className={styles.todo}
     >
       <span className={styles.dragHandle} {...attributes} {...listeners}>⠿</span>
@@ -81,6 +107,41 @@ function SortableItem({ item, dateStr, isDone, onToggle, onRemove }) {
         <span className={isDone ? styles.done : ''}>{item.todo.text}</span>
       </label>
       <button className={styles.removeBtn} onClick={onRemove}>✕</button>
+    </div>
+  );
+}
+
+function DayItemList({ items, dateStr, donIds, isDraggingAny, toggleTodo, toggleRecurring, removeTodo, removeRecurring }) {
+  const listRef = useRef(null);
+  const keys = items.map((i) => i.key);
+  useListFlip(keys, listRef, isDraggingAny);
+
+  return (
+    <div ref={listRef}>
+      <SortableContext items={keys} strategy={verticalListSortingStrategy}>
+        {items.map((item) => {
+          const isRecurring = item.kind === 'recurring';
+          const isDone = isRecurring ? donIds.includes(item.todo.id) : item.todo.done;
+          return (
+            <SortableItem
+              key={item.key}
+              item={{ ...item, dateStr }}
+              isDone={isDone}
+              isDraggingAny={isDraggingAny}
+              onToggle={() =>
+                isRecurring
+                  ? toggleRecurring(dateStr, item.todo.id)
+                  : toggleTodo(dateStr, item.todo.id)
+              }
+              onRemove={() =>
+                isRecurring
+                  ? removeRecurring(item.todo.id)
+                  : removeTodo(dateStr, item.todo.id)
+              }
+            />
+          );
+        })}
+      </SortableContext>
     </div>
   );
 }
@@ -135,8 +196,8 @@ export default function TodoWeekView({
       const overIsDay = over.data.current?.type === 'day';
       const toDate = over.data.current?.dateStr;
       if (!toDate) return;
-        if (kind === 'recurring' && toDate === UNSCHEDULED) return;
-        if (kind === 'recurring' && fromDate === UNSCHEDULED) return;
+      if (kind === 'recurring' && toDate === UNSCHEDULED) return;
+      if (kind === 'recurring' && fromDate === UNSCHEDULED) return;
 
       if (fromDate === toDate) {
         if (overIsDay || a.id === over.id) return;
@@ -146,6 +207,13 @@ export default function TodoWeekView({
         if (from === -1 || to === -1) return;
         setDayOrder(fromDate, arrayMove(keys, from, to));
       } else {
+        // Monthly day-of-month recurrences can't be moved to another calendar day.
+        if (kind === 'recurring') {
+          const srcItems = getDayItems(fromDate);
+          const dragged = srcItems.find((i) => i.key === a.id);
+          if (dragged?.todo?.monthDay != null) return;
+        }
+
         // Capture current orders BEFORE the move (state updates are async).
         const srcKeys = getDayItems(fromDate)
           .map((i) => i.key)
@@ -180,6 +248,7 @@ export default function TodoWeekView({
   const unscheduledItems = getDayItems(UNSCHEDULED);
   const unscheduledHighlight =
     overDate === UNSCHEDULED && active && active.kind === 'todo' && active.dateStr !== UNSCHEDULED;
+  const isDraggingAny = !!active;
 
   return (
     <DndContext
@@ -213,51 +282,32 @@ export default function TodoWeekView({
                   <button className={styles.removeBtn} onClick={() => removeEvent(dateStr, e.id)}>✕</button>
                 </div>
               ))}
-              <SortableContext items={items.map((i) => i.key)} strategy={verticalListSortingStrategy}>
-                {items.map((item) => {
-                  const isRecurring = item.kind === 'recurring';
-                  const isDone = isRecurring ? donIds.includes(item.todo.id) : item.todo.done;
-                  return (
-                    <SortableItem
-                      key={item.key}
-                      item={item}
-                      dateStr={dateStr}
-                      isDone={isDone}
-                      onToggle={() =>
-                        isRecurring
-                          ? toggleRecurring(dateStr, item.todo.id)
-                          : toggleTodo(dateStr, item.todo.id)
-                      }
-                      onRemove={() =>
-                        isRecurring
-                          ? removeRecurring(item.todo.id)
-                          : removeTodo(dateStr, item.todo.id)
-                      }
-                    />
-                  );
-                })}
-              </SortableContext>
+              <DayItemList
+                items={items}
+                dateStr={dateStr}
+                donIds={donIds}
+                isDraggingAny={isDraggingAny}
+                toggleTodo={toggleTodo}
+                toggleRecurring={toggleRecurring}
+                removeTodo={removeTodo}
+                removeRecurring={removeRecurring}
+              />
             </DroppableDayCard>
           );
         })}
         <DroppableDayCard dateStr={UNSCHEDULED} highlight={unscheduledHighlight}>
           <h3 className={styles.dayHeader}>Unscheduled</h3>
           <div className={styles.backlogDropArea}>
-            <SortableContext
-              items={unscheduledItems.map((i) => i.key)}
-              strategy={verticalListSortingStrategy}
-            >
-              {unscheduledItems.map((item) => (
-                <SortableItem
-                  key={item.key}
-                  item={item}
-                  dateStr={UNSCHEDULED}
-                  isDone={item.todo.done}
-                  onToggle={() => toggleTodo(UNSCHEDULED, item.todo.id)}
-                  onRemove={() => removeTodo(UNSCHEDULED, item.todo.id)}
-                />
-              ))}
-            </SortableContext>
+            <DayItemList
+              items={unscheduledItems}
+              dateStr={UNSCHEDULED}
+              donIds={[]}
+              isDraggingAny={isDraggingAny}
+              toggleTodo={toggleTodo}
+              toggleRecurring={toggleRecurring}
+              removeTodo={removeTodo}
+              removeRecurring={removeRecurring}
+            />
           </div>
           <form onSubmit={handleBacklogAdd} className={styles.addForm}>
             <input

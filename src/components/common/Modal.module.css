@@ -4,12 +4,21 @@
   padding: 0;
   max-width: 400px;
   width: calc(100% - 32px);
+  max-height: calc(100dvh - 32px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
   margin: auto;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 32px var(--color-shadow-strong);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+/* Only show when open — bare `display: flex` overrides the UA `display: none` on closed dialogs */
+.modal[open] {
+  display: flex;
+  flex-direction: column;
 }
 
 .modal::backdrop {
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--color-backdrop);
 }
 
 .header {
@@ -18,6 +27,7 @@
   justify-content: space-between;
   padding: 16px 20px;
   border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
 }
 
 .title {
@@ -28,8 +38,18 @@
 .close {
   font-size: 1.2rem;
   color: var(--color-text-secondary);
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: -10px -12px -10px 0;
+  border-radius: 8px;
 }
 
 .body {
   padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
 }
